@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+.env
+venv/
+env/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Model files (large files)
+*.keras
+*.h5
+*.pkl
+
+# Dataset
+datasets/
+data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
