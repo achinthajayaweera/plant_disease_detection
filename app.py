@@ -3,6 +3,8 @@ from PIL import Image
 import numpy as np
 import tensorflow as tf
 import json
+import os
+import gdown
 
 # ---- Page Config ----
 st.set_page_config(
@@ -11,10 +13,18 @@ st.set_page_config(
     layout="centered"
 )
 
+# ---- Download model from Google Drive if not present ----
+MODEL_PATH = "plant_model.keras"
+FILE_ID = "1NLEl_BLYK_z05ZM3Efp2PEoysAxgEH-T"
+
+if not os.path.exists(MODEL_PATH):
+    with st.spinner("Downloading model... please wait ⏳"):
+        gdown.download(f"https://drive.google.com/uc?id={FILE_ID}", MODEL_PATH, quiet=False)
+
 # ---- Load model and class names ----
 @st.cache_resource
 def load_model():
-    model = tf.keras.models.load_model("plant_model.keras")
+    model = tf.keras.models.load_model(MODEL_PATH)
     return model
 
 @st.cache_resource
@@ -47,11 +57,11 @@ if uploaded_file is not None:
 
     img_array = preprocess_image(image)
 
-    # ---- Prediction ----
-    preds = model.predict(img_array)
-    pred_index = np.argmax(preds[0])
-    pred_class = CLASS_NAMES[pred_index]
-    confidence = float(np.max(preds[0]) * 100)
+    with st.spinner("Analyzing leaf... 🔍"):
+        preds = model.predict(img_array)
+        pred_index = np.argmax(preds[0])
+        pred_class = CLASS_NAMES[pred_index]
+        confidence = float(np.max(preds[0]) * 100)
 
     st.success(f"🌱 **Predicted Disease:** {pred_class}")
     st.write(f"🔍 Confidence: `{confidence:.2f}%`")
