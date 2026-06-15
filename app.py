@@ -46,5 +46,12 @@ if uploaded_file is not None:
     st.image(image, caption="Uploaded Image", use_column_width=True)
 
     img_array = preprocess_image(image)
-    st.success("Image preprocessed and ready for prediction!")
-    st.info("Prediction coming in the next update...")
+
+    # ---- Prediction ----
+    preds = model.predict(img_array)
+    pred_index = np.argmax(preds[0])
+    pred_class = CLASS_NAMES[pred_index]
+    confidence = float(np.max(preds[0]) * 100)
+
+    st.success(f"🌱 **Predicted Disease:** {pred_class}")
+    st.write(f"🔍 Confidence: `{confidence:.2f}%`")
